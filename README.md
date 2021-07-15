@@ -4,7 +4,7 @@ This is a fork of the R package for the paper at UAI2021 by Philip A. Boeken and
 
 'A Bayesian Nonparametric Conditional Two-sample Test with an Application to Local Causal Discovery' (Boeken and Mooij, 2021)
 
-With the miic (conditional) mutual information estimation and significance test added for comparison for JFRB (Journées Francophones sur les Réseaux Bayésiens) 2021
+With the miic (conditional) mutual information estimation and significance test added for comparison for JFRB (Journées Francophones sur les Réseaux Bayésiens) 2021. See 'output' folder for comparison benchmarks.
 
 ## Installation
 
