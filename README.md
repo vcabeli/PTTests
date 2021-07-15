@@ -9,21 +9,20 @@ With the miic (conditional) mutual information estimation and significance test 
 ## Installation
 
 To install this R package, make sure you have R (version >= 3.5.0) and RStudio installed. Open ``PTTests.Rproj`` in RStudio and execute:
-
 ```R
 install.packages("devtools")
 devtools::install_local("./")
 library(PTTests)
 ```
+Refer to the original repository for further information https://github.com/philipboeken/PTTests
+
 
 For miic, visit https://github.com/miicTeam/miic_R_package/ or run :
-
 ```R
 # install.packages("remotes")
 remotes::install_github("miicTeam/miic_R_package")
 ```
 
-Refer to the original repository for further information https://github.com/philipboeken/PTTests
 
 ## miic References
 Cabeli V., Verny L., Sella N., Uguzzoni G., Verny M., Isambert H.; Learning clinical networks from medical records based on information estimates in mixed-type data; PLoS computational biology., 2020. [doi:10.1371/journal.pcbi.1007866](https://doi.org/10.1371/journal.pcbi.1007866) | [code](https://github.com/vcabeli/miic_PLoS)
