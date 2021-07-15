@@ -19,8 +19,12 @@ experiment_lcd_roc_curves <- function(m = 2000, n = 400, graph_probs = c(3 / 5, 
   }
 
   get_results <- function(dataset, test) {
+    print(test)
+    pb <- txtProgressBar(max = length(dataset), style = 3)
+    progress <- function(n) setTxtProgressBar(pb, n)
+    opts <- list(progress = progress)
     `%dopar%` <- foreach::`%dopar%`
-    foreach::foreach(i = 1:length(dataset), .combine = rbind) %dopar% {
+    foreach::foreach(i = 1:length(dataset), .combine = rbind, .options.snow=opts) %dopar% {
       data <- dataset[[i]]
 
       CX <- test(data$C, data$X)
@@ -40,7 +44,10 @@ experiment_lcd_roc_curves <- function(m = 2000, n = 400, graph_probs = c(3 / 5, 
   # Do test
   ##############################################
 
-  doParallel::registerDoParallel()
+  cores=detectCores()
+  cl <- makeCluster(cores[1]-1) #not to overload your computer
+  registerDoParallel(cl)
+  registerDoSNOW(cl)
   if (!is.null(simulation) && simulation == 'paper') {
     data <- lapply(1:m, function(i) get_data_paper(graph_probs, n, dim_C, err_sd, p_link,
                                                    interv_options, nonlin_options))
@@ -52,7 +59,8 @@ experiment_lcd_roc_curves <- function(m = 2000, n = 400, graph_probs = c(3 / 5, 
   results <- list(
     ppcor = get_results(data, .ppcor_wrapper),
     ppcor_b = get_results(data, .ppcor_b_wrapper),
-    polyatree = get_results(data, .pt_wrapper)
+    polyatree = get_results(data, .pt_wrapper),
+    miic = get_results(data, .miic_wrapper)
   )
 
 
@@ -88,6 +96,7 @@ experiment_lcd_roc_curves <- function(m = 2000, n = 400, graph_probs = c(3 / 5, 
   grid <- cowplot::plot_grid(.plot0, .plot1, .plot2, nrow = 1)
 
   timestamp <- format(Sys.time(), '%Y%m%d_%H%M%S')
+  stopCluster(cl)
 
   save(results, file = sprintf("%s%s.Rdata", path, timestamp))
   .ggsave(paste(path, timestamp, sep = ''), grid, 30, 10)

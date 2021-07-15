@@ -2,6 +2,7 @@
                       ppcor = "#E69F00", spcor = "#56B4E9",
                       gcm = "#009E73", rcot = "#F0E442",
                       ccit = "#0072B2", ppcor_b = "#0072B2",
+                      miic = "#FF0000",
                       mi_mixed = "#D55E00", lr_mixed = "#CC79A7",
                       pt1 = "#D55E00", pt2 = "#CC79A7",
                       pt3 = "#000000", pt4 = "#E69F00",

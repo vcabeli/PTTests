@@ -24,8 +24,12 @@ experiment_lcd_compare_tests_roc <- function(m = 2000, n = 400, graph_probs = c(
   }
   
   get_results <- function(dataset, test) {
+    print(test)
+    pb <- txtProgressBar(max = length(dataset), style = 3)
+    progress <- function(n) setTxtProgressBar(pb, n)
+    opts <- list(progress = progress)
     `%dopar%` <- foreach::`%dopar%`
-    result <- foreach::foreach(i = 1:length(dataset), .combine = rbind) %dopar% {
+    result <- foreach::foreach(i = 1:length(dataset), .combine = rbind, .options.snow=opts) %dopar% {
       data <- dataset[[i]]
       
       start_time_CX <- Sys.time()
@@ -40,6 +44,7 @@ experiment_lcd_compare_tests_roc <- function(m = 2000, n = 400, graph_probs = c(
       CY_X <- test(data$C, data$Y, data$X)
       end_time_CY_X <- Sys.time()
       
+      gc()
       return(data.frame(
         label_CX = data$label_CX,
         label_XY = data$label_XY,
@@ -60,7 +65,10 @@ experiment_lcd_compare_tests_roc <- function(m = 2000, n = 400, graph_probs = c(
     # Do test
     ##############################################
     
-    doParallel::registerDoParallel()
+    cores=detectCores()
+    cl <- makeCluster(cores[1]-1) #not to overload your computer
+    registerDoParallel(cl)
+    registerDoSNOW(cl)
     
     if (!is.null(simulation) && simulation == 'paper') {
       data <- lapply(1:m, function(i) get_data_paper(graph_probs, n, dim_C, err_sd, p_link,
@@ -75,10 +83,11 @@ experiment_lcd_compare_tests_roc <- function(m = 2000, n = 400, graph_probs = c(
         ppcor = get_results(data, .ppcor_wrapper),
         spcor = get_results(data, .spcor_wrapper),
         gcm = get_results(data, .gcm_wrapper),
-        # ccit = get_results(data, .ccit_wrapper),
+        #ccit = get_results(data, .ccit_wrapper),
         rcot = get_results(data, .rcot_wrapper),
         polyatree_c = get_results(data, .pt_wrapper_continuous),
-        polyatree = get_results(data, .pt_wrapper))
+        polyatree = get_results(data, .pt_wrapper),
+        miic = get_results(data, .miic_wrapper))
     } else if (pt_sensitivity) {
       results <- list(
         pt1 = get_results(data, .pt_wrapper_sensitivity(function (depth) depth^2 / 10)),
@@ -95,12 +104,15 @@ experiment_lcd_compare_tests_roc <- function(m = 2000, n = 400, graph_probs = c(
         ppcor = get_results(data, .ppcor_wrapper),
         spcor = get_results(data, .spcor_wrapper),
         gcm = get_results(data, .gcm_wrapper),
-        # ccit = get_results(data, .ccit_wrapper),
+        #ccit = get_results(data, .ccit_wrapper),
         rcot = get_results(data, .rcot_wrapper),
         mi_mixed = get_results(data, .mi_mixed_wrapper),
         lr_mixed = get_results(data, .lr_mixed_wrapper),
-        polyatree = get_results(data, .pt_wrapper))
+        polyatree = get_results(data, .pt_wrapper),
+        miic = get_results(data, .miic_wrapper))
     }
+    
+    stopCluster(cl)
   }
   
   # Process results
@@ -189,10 +201,10 @@ experiment_lcd_compare_tests_roc <- function(m = 2000, n = 400, graph_probs = c(
 }
 
 experiment_lcd_compare_tests_auc <- function(m = 200, dim_C = 2,
-                                             Ns = c(60, 80, 100,
-                                                    seq(120, 180, by = 30),
-                                                    seq(200, 500, by = 100),
-                                                    600, 800, 1000, 1250, 1500),
+                                             Ns = c(60,100,200,300,500,750,1000,1250, 1500),#c(60, 80, 100,
+                                                  #  seq(120, 180, by = 30),
+                                                  #  seq(200, 500, by = 100),
+                                                  #  600, 800, 1000, 1250, 1500),
                                              simulation = NULL,
                                              path = 'output/lcd_compare_tests/',
                                              pt_sensitivity = FALSE,
@@ -208,6 +220,7 @@ experiment_lcd_compare_tests_auc <- function(m = 200, dim_C = 2,
           aucs[[type]][[test]] <- c(aucs[[type]][[test]], res[[type]][[test]])
         }
       }
+      gc()
     }
   }
   

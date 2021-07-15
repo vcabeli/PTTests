@@ -1,5 +1,19 @@
 # Test wrappers
 ##############################################
+.miic_wrapper_one <- function(X, Y, Z = NULL) {
+  if(is.null(Z)){
+    res <- miic::discretizeMutual(X, Y, maxbins = length(X), plot=F)
+  } else {
+    res <- miic::discretizeMutual(X, Y, matrix(Z, ncol=1), maxbins = length(X), plot=F)
+  }
+  res$infok
+}
+
+.miic_wrapper <- function (X, Y, Z = NULL) {
+  info <- .miic_wrapper_one(X,Y,Z)
+  1 - (info / min(c(.miic_wrapper_one(X,X), .miic_wrapper_one(Y,Y))))
+}
+
 .pt_wrapper <- function(X, Y, Z = NULL) {
   pt_ci_test(X, Y, Z, verbose = FALSE)$p_H0
 }
@@ -55,6 +69,7 @@
 }
 
 .ccit_wrapper <- function(X, Y, Z = NULL) {
+  reticulate::use_condaenv("py38")
   .ccit <- reticulate::import('CCIT')
   .ccit <- .ccit$CCIT$CCIT
   if (is.null(Z) || length(Z) == 0) {

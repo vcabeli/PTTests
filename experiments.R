@@ -1,6 +1,8 @@
 start_time <- Sys.time()
 devtools::install_local('./', force = TRUE)
 library(PTTests)
+library(doParallel)
+library(doSNOW)
 experiment_lcd_roc_curves(simulation = 'paper')
 experiment_lcd_compare_tests_roc(simulation = 'paper')
 # experiment_lcd_compare_tests_roc(simulation = 'paper', results_file = "lcd_roc_curves.Rdata")
