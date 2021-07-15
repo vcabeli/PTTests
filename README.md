@@ -1,6 +1,6 @@
 # miic in Polya Tree independence tests (PTTests) benchmarks
 
-This is a fork of the R package for the paper at UAI2021 by Philip A. Boeken and Joris M. Mooij
+This is a fork of the R package for the nice paper at UAI2021 by Philip A. Boeken and Joris M. Mooij
 
 'A Bayesian Nonparametric Conditional Two-sample Test with an Application to Local Causal Discovery' (Boeken and Mooij, 2021)
 
