@@ -6,6 +6,10 @@ This is a fork of the R package for the paper at UAI2021 by Philip A. Boeken and
 
 With the miic (conditional) mutual information estimation and significance test added for comparison for JFRB (Journées Francophones sur les Réseaux Bayésiens) 2021. See 'output' folder for comparison benchmarks.
 
+![image](https://user-images.githubusercontent.com/11282434/125817218-d1323db8-5573-4f28-9ce9-8c667a641cd3.png)
+![image](https://user-images.githubusercontent.com/11282434/125817734-52a224ed-efbb-400e-b0d8-cc57d43ffd3a.png)
+
+
 ## Installation
 
 To install this R package, make sure you have R (version >= 3.5.0) and RStudio installed. Open ``PTTests.Rproj`` in RStudio and execute:
